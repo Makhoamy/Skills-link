@@ -1,0 +1,85 @@
+@if (loading()) {
+  <p>Loading…</p>
+} @else if (job(); as j) {
+  <h1>{{ j.title }}</h1>
+  <p class="meta">{{ j.company_name }} · {{ j.city }}, {{ j.province_name }} · {{ j.category_name }}</p>
+  <p class="pay">R{{ j.pay_amount }} / {{ j.pay_period }}</p>
+
+  @if (j.below_nmw_flag) {
+    <div class="card flag">
+      <span class="badge warn">Below minimum wage</span>
+      <p>This rate is below the current National Minimum Wage. Consider asking the employer about it before applying.</p>
+    </div>
+  }
+
+  <p>{{ j.description }}</p>
+
+  @if (j.recruiter_rating_count > 0) {
+    <p>Employer rating: ★ {{ j.recruiter_rating }} ({{ j.recruiter_rating_count }} reviews)</p>
+  }
+
+  @if (auth.currentUser()?.id === j.recruiter_id) {
+    <a class="btn btn-outline" [routerLink]="['/jobs', j.id, 'applicants']">View applicants</a>
+  } @else if (!auth.isLoggedIn()) {
+    <p><a routerLink="/login">Log in</a> as a jobseeker to apply for this job.</p>
+  } @else if (auth.currentUser()?.role === 'jobseeker') {
+    @if (applied()) {
+      <p class="badge">Applied</p>
+    } @else {
+      <div class="field" style="max-width: 420px;">
+        <label for="coverNote">Short note to the employer (optional)</label>
+        <textarea id="coverNote" rows="3" maxlength="500" [(ngModel)]="coverNote" name="coverNote"></textarea>
+      </div>
+      <button class="btn btn-primary" (click)="apply()" [disabled]="applying()">
+        {{ applying() ? 'Sending…' : 'Apply for this job' }}
+      </button>
+    }
+    @if (applyMessage()) {
+      <p>{{ applyMessage() }}</p>
+      @if (applyMessage()?.includes('complete your profile')) {
+        <a routerLink="/worker-profile">Go to my profile</a>
+      }
+    }
+  }
+
+  <hr>
+
+  <h2>Reviews</h2>
+  @if (reviews().length === 0) {
+    <p>No reviews yet.</p>
+  }
+  @for (r of reviews(); track $index) {
+    <div class="card">
+      <p>★ {{ r.rating }}</p>
+      @if (r.comment) { <p>{{ r.comment }}</p> }
+    </div>
+  }
+
+  @if (auth.currentUser()?.role === 'jobseeker') {
+  <h3>Leave a review for this employer</h3>
+  <div class="field" style="max-width: 340px;">
+    <label for="rating">Rating</label>
+    <select id="rating" [(ngModel)]="newRating" name="rating">
+      <option [ngValue]="5">5 — Excellent</option>
+      <option [ngValue]="4">4 — Good</option>
+      <option [ngValue]="3">3 — Okay</option>
+      <option [ngValue]="2">2 — Poor</option>
+      <option [ngValue]="1">1 — Very poor</option>
+    </select>
+  </div>
+  <div class="field" style="max-width: 420px;">
+    <label for="comment">Comment (optional)</label>
+    <textarea id="comment" rows="3" [(ngModel)]="newComment" name="comment"></textarea>
+  </div>
+  <button class="btn btn-outline" (click)="submitReview()" [disabled]="reviewSubmitting()">
+    {{ reviewSubmitting() ? 'Submitting…' : 'Submit review' }}
+  </button>
+  @if (reviewMessage()) {
+    <p>{{ reviewMessage() }}</p>
+  }
+  }
+} @else {
+  <p>Job not found.</p>
+}
+
+<app-page-nav></app-page-nav>

@@ -1,0 +1,82 @@
+<h1>Post a job</h1>
+
+<form (ngSubmit)="submit()" style="max-width: 520px;">
+  <div class="field">
+    <label for="title">Job title</label>
+    <input id="title" name="title" [(ngModel)]="title" required>
+  </div>
+  <div class="field">
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4" [(ngModel)]="description" required></textarea>
+  </div>
+  <div class="field">
+    <label for="categoryId">Category</label>
+    <select id="categoryId" name="categoryId" [(ngModel)]="categoryId" required>
+      <option [ngValue]="null">--Select--</option>
+      @for (c of categories(); track c.id) {
+        <option [ngValue]="c.id">{{ c.name }}</option>
+      }
+    </select>
+  </div>
+  <div class="field">
+    <label for="provinceId">Province</label>
+    <select id="provinceId" name="provinceId" [(ngModel)]="provinceId" required>
+      <option [ngValue]="null">--Select--</option>
+      @for (p of provinces(); track p.id) {
+        <option [ngValue]="p.id">{{ p.name }}</option>
+      }
+    </select>
+  </div>
+  <div class="field">
+    <label for="city">City / town</label>
+    <input id="city" name="city" [(ngModel)]="city" required>
+  </div>
+  <div class="field">
+    <label for="employmentType">Employment type</label>
+    <select id="employmentType" name="employmentType" [(ngModel)]="employmentType" required>
+      <option value="">--Select--</option>
+      <option value="full_time">Full time</option>
+      <option value="part_time">Part time</option>
+      <option value="temporary">Temporary</option>
+      <option value="once_off">Once-off</option>
+    </select>
+  </div>
+
+  <div class="field pay-row">
+    <div>
+      <label for="payAmount">Pay amount (ZAR)</label>
+      <input id="payAmount" type="number" name="payAmount" [(ngModel)]="payAmount" min="0" required>
+    </div>
+    <div>
+      <label for="payPeriod">Per</label>
+      <select id="payPeriod" name="payPeriod" [(ngModel)]="payPeriod" required>
+        <option value="">--Select--</option>
+        <option value="hourly">Hour</option>
+        <option value="daily">Day</option>
+        <option value="weekly">Week</option>
+        <option value="monthly">Month</option>
+      </select>
+    </div>
+  </div>
+
+  @if (isBelowNmw()) {
+    <div class="card flag">
+      <span class="badge warn">Below minimum wage</span>
+      <p>This works out to roughly R{{ hourlyEquivalent()?.toFixed(2) }}/hour, which is below the current
+        National Minimum Wage. You can still post it, but it will be flagged for review.</p>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <p class="error-text">{{ errorMessage() }}</p>
+  }
+  @if (successMessage()) {
+    <p style="color: var(--slk-teal); font-weight: 600;">{{ successMessage() }}</p>
+  }
+
+  <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+    {{ submitting() ? 'Posting…' : 'Post job' }}
+  </button>
+</form>
+
+<app-page-nav nextLink="/find-workers" nextLabel="Next: Find Workers"></app-page-nav>

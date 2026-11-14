@@ -1,0 +1,45 @@
+<section>
+  <h1>Skills Link</h1>
+  <p>Connecting workers and employers across South Africa — cleaning, construction, hospitality, security, logistics and more.</p>
+</section>
+
+<hr>
+
+<section>
+  <h2>Find Your Next Job</h2>
+  <form (ngSubmit)="search()">
+    <div class="field">
+      <label for="keyword">Job title or keyword</label>
+      <input id="keyword" type="text" [(ngModel)]="keyword" name="keyword" placeholder="e.g. Cleaner, Gardener, Painter">
+    </div>
+    <div class="field">
+      <label for="province">Province</label>
+      <select id="province" [(ngModel)]="provinceId" name="province">
+        <option [ngValue]="null">All provinces</option>
+        @for (p of provinces; track p.id) {
+          <option [ngValue]="p.id">{{ p.name }}</option>
+        }
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Search Jobs</button>
+  </form>
+</section>
+
+<hr>
+
+<section>
+  <h2>Get Started</h2>
+  <p>Looking for work? <a routerLink="/signup">Create a worker profile</a></p>
+  <p>Looking to hire? <a routerLink="/signup">Register your company & post a job</a></p>
+</section>
+
+<hr>
+
+<section>
+  <h2>Popular Jobs</h2>
+  <ul>
+    @for (job of popularJobs; track job) {
+      <li>{{ job }}</li>
+    }
+  </ul>
+</section>

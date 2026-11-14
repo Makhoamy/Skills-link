@@ -1,0 +1,88 @@
+<div class="admin-container">
+
+  <div class="dashboard-header">
+    <div>
+      <h1>Reports</h1>
+      <p>Management reports for Skills Link. Download them for Excel or print / save as PDF.</p>
+    </div>
+
+    <div class="header-buttons no-print">
+      <button class="export-btn" (click)="exportToCsv()" [disabled]="loading() || !report() || report()!.rows.length === 0">
+        Download Excel Report
+      </button>
+      <button class="export-btn" (click)="printReport()" [disabled]="loading() || !report() || report()!.rows.length === 0">
+        Print / Save as PDF
+      </button>
+    </div>
+  </div>
+
+  <div class="tabs no-print">
+    <a class="tab" routerLink="/admin-dashboard">Login History</a>
+    @for (t of tabs; track t.type) {
+      <button type="button" class="tab" [class.active]="active() === t.type" (click)="select(t.type)">{{ t.label }}</button>
+    }
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">{{ errorMessage() }}</div>
+  }
+
+  @if (report(); as r) {
+    <div class="summary-cards">
+      @for (s of r.summary; track s.label) {
+        <div class="summary-card">
+          <h3>{{ s.label }}</h3>
+          <p>{{ s.value }}</p>
+        </div>
+      }
+    </div>
+
+    <div class="history-section">
+      <h2>{{ r.title }}</h2>
+      <p>{{ r.description }}<br>
+        Period: {{ periodText() }} | Rows: {{ r.rows.length }} | Generated: {{ generatedAt() }}
+      </p>
+
+      @if (isDated()) {
+        <form class="filters no-print" (ngSubmit)="load()">
+          <label>From <input type="date" name="from" [(ngModel)]="from"></label>
+          <label>To <input type="date" name="to" [(ngModel)]="to"></label>
+          <button type="submit" class="export-btn">Apply</button>
+          <button type="button" class="clear-btn" (click)="clearFilters()">Clear</button>
+        </form>
+      }
+
+      @if (loading()) {
+        <p class="loading-text">Loading report...</p>
+      } @else if (r.rows.length > 0) {
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                @for (c of r.columns; track c.key) {
+                  <th>{{ c.label }}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of r.rows; track $index) {
+                <tr>
+                  @for (c of r.columns; track c.key) {
+                    <td>{{ row[c.key] }}</td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="empty-message">No records found for this period.</p>
+      }
+    </div>
+  } @else if (loading()) {
+    <p class="loading-text">Loading report...</p>
+  }
+
+  <app-page-nav nextLink="/backup" nextLabel="Next: System Backup"></app-page-nav>
+
+</div>

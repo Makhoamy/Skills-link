@@ -1,0 +1,111 @@
+<h1>Company profile</h1>
+<p>Verified companies get a badge on their job posts — it helps workers trust your listings.</p>
+
+@if (profileExists()) {
+  <p>
+    Verification status:
+    @if (verificationStatus() === 'verified') {
+      <span class="badge">Verified</span>
+    } @else if (verificationStatus() === 'rejected') {
+      <span class="badge warn">Rejected — please check your details and upload your document again</span>
+    } @else {
+      <span class="badge warn">Waiting for review</span>
+    }
+  </p>
+}
+
+<form (ngSubmit)="save()" novalidate style="max-width: 560px;">
+  <fieldset>
+    <legend>Company details</legend>
+    <div class="field">
+      <label for="companyName">Company name *</label>
+      <input id="companyName" name="companyName" [(ngModel)]="companyName" maxlength="150" autocomplete="organization" [attr.aria-invalid]="!!errors['companyName']">
+      @if (errors['companyName']) { <small class="error-text" role="alert">{{ errors['companyName'] }}</small> }
+    </div>
+    <div class="field">
+      <label for="registrationNumber">Company registration number</label>
+      <input id="registrationNumber" name="registrationNumber" [(ngModel)]="registrationNumber" maxlength="50">
+      <small>Changing this sends your company back for verification.</small>
+      @if (errors['registrationNumber']) { <small class="error-text" role="alert">{{ errors['registrationNumber'] }}</small> }
+    </div>
+    <div class="field">
+      <label for="address">Address</label>
+      <input id="address" name="address" [(ngModel)]="address" maxlength="200" autocomplete="street-address">
+      @if (errors['address']) { <small class="error-text" role="alert">{{ errors['address'] }}</small> }
+    </div>
+    <div class="field">
+      <label for="city">City *</label>
+      <input id="city" name="city" [(ngModel)]="city" maxlength="80">
+      @if (errors['city']) { <small class="error-text" role="alert">{{ errors['city'] }}</small> }
+    </div>
+    <div class="field">
+      <label for="province">Province *</label>
+      <select id="province" name="province" [(ngModel)]="provinceId">
+        <option [ngValue]="null">--Select--</option>
+        @for (p of provinces(); track p.id) {
+          <option [ngValue]="p.id">{{ p.name }}</option>
+        }
+      </select>
+      @if (errors['province']) { <small class="error-text" role="alert">{{ errors['province'] }}</small> }
+    </div>
+    <div class="field">
+      <label for="zipCode">Postal code</label>
+      <input id="zipCode" name="zipCode" [(ngModel)]="zipCode" maxlength="10" autocomplete="postal-code">
+      @if (errors['zipCode']) { <small class="error-text" role="alert">{{ errors['zipCode'] }}</small> }
+    </div>
+    <div class="field">
+      <label for="description">Company description</label>
+      <textarea id="description" name="description" rows="3" [(ngModel)]="description" maxlength="1000"></textarea>
+      @if (errors['description']) { <small class="error-text" role="alert">{{ errors['description'] }}</small> }
+    </div>
+    <div class="field">
+      <label for="website">Website (optional)</label>
+      <input id="website" type="text" name="website" [(ngModel)]="website" maxlength="255" placeholder="www.example.co.za">
+      @if (errors['website']) { <small class="error-text" role="alert">{{ errors['website'] }}</small> }
+    </div>
+    <div class="field">
+      <label for="regDoc">Company registration document (PDF, JPG or PNG, max 5 MB)</label>
+      <input id="regDoc" type="file" name="regDoc" accept=".pdf,.jpg,.jpeg,.png" (change)="onFileChosen($event)">
+      @if (errors['regDoc']) { <small class="error-text" role="alert">{{ errors['regDoc'] }}</small> }
+      @if (hasRegDoc()) {
+        <small>A document is already uploaded. Choosing a new file will replace it.</small>
+      }
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Contact person</legend>
+    <div class="field">
+      <label for="contactFirstName">First name *</label>
+      <input id="contactFirstName" name="contactFirstName" [(ngModel)]="contactFirstName" maxlength="80" autocomplete="given-name">
+      @if (errors['contactFirstName']) { <small class="error-text" role="alert">{{ errors['contactFirstName'] }}</small> }
+    </div>
+    <div class="field">
+      <label for="contactLastName">Last name *</label>
+      <input id="contactLastName" name="contactLastName" [(ngModel)]="contactLastName" maxlength="80" autocomplete="family-name">
+      @if (errors['contactLastName']) { <small class="error-text" role="alert">{{ errors['contactLastName'] }}</small> }
+    </div>
+    <div class="field">
+      <label for="contactPosition">Position (optional)</label>
+      <input id="contactPosition" name="contactPosition" [(ngModel)]="contactPosition" maxlength="80">
+      @if (errors['contactPosition']) { <small class="error-text" role="alert">{{ errors['contactPosition'] }}</small> }
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-outline" [disabled]="saving()">
+      {{ saving() ? 'Saving…' : 'Save company profile' }}
+    </button>
+    <button type="button" class="btn btn-primary" [disabled]="saving()" (click)="save(true)">
+      {{ saving() ? 'Saving…' : 'Save and continue' }}
+    </button>
+  </div>
+  @if (saved()) {
+    <p class="success-text" role="status">Company profile saved.</p>
+  }
+  @if (errorMessage()) {
+    <p class="error-text">{{ errorMessage() }}</p>
+  }
+</form>
+
+<app-page-nav nextLink="/post-job" nextLabel="Next: Post a Job"></app-page-nav>

@@ -1,0 +1,161 @@
+<h1>My profile</h1>
+<p>This is what recruiters see when you apply for jobs or post an advert.</p>
+
+<nav class="flow-steps no-print" aria-label="Your steps">
+  <span class="flow-step current" aria-current="step"><b>1</b> My Profile</span>
+  <a class="flow-step" routerLink="/my-adverts"><b>2</b> My Adverts</a>
+  <a class="flow-step" routerLink="/jobs"><b>3</b> Find Work</a>
+</nav>
+<div class="flow-actions no-print">
+  <a routerLink="/my-adverts" class="btn btn-primary">Go to My Adverts →</a>
+  <a routerLink="/jobs" class="btn btn-outline">Find Work</a>
+</div>
+
+<form (ngSubmit)="save()" novalidate style="max-width: 520px;">
+  <div class="field">
+    <label for="firstName">First name *</label>
+    <input id="firstName" name="firstName" [(ngModel)]="firstName" maxlength="80" autocomplete="given-name" [attr.aria-invalid]="!!errors['firstName']">
+    @if (errors['firstName']) { <small class="error-text" role="alert">{{ errors['firstName'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="lastName">Last name *</label>
+    <input id="lastName" name="lastName" [(ngModel)]="lastName" maxlength="80" autocomplete="family-name" [attr.aria-invalid]="!!errors['lastName']">
+    @if (errors['lastName']) { <small class="error-text" role="alert">{{ errors['lastName'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="gender">Gender *</label>
+    <select id="gender" name="gender" [(ngModel)]="gender">
+      <option value="">--Select--</option>
+      <option>Female</option>
+      <option>Male</option>
+      <option>Other</option>
+      <option>Prefer not to say</option>
+    </select>
+    @if (errors['gender']) { <small class="error-text" role="alert">{{ errors['gender'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="dob">Date of birth *</label>
+    <input id="dob" type="date" name="dob" [(ngModel)]="dob">
+    @if (errors['dob']) { <small class="error-text" role="alert">{{ errors['dob'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="idNumber">ID / passport number *</label>
+    <input id="idNumber" name="idNumber" [(ngModel)]="idNumber"
+           [placeholder]="hasIdNumber() ? 'Saved — type a new one only if you want to change it' : ''">
+    <small>Stored encrypted. Only shared with a recruiter if you choose to share it during hiring.</small>
+    @if (errors['idNumber']) { <small class="error-text" role="alert">{{ errors['idNumber'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="citizenship">Citizenship *</label>
+    <select id="citizenship" name="citizenship" [(ngModel)]="citizenship">
+      <option value="">--Select--</option>
+      <option>South African</option>
+      <option>Non-SA with work permit</option>
+      <option>Non-SA, no work permit</option>
+    </select>
+    @if (errors['citizenship']) { <small class="error-text" role="alert">{{ errors['citizenship'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="driversLicense">Driver's license</label>
+    <input id="driversLicense" name="driversLicense" [(ngModel)]="driversLicense" placeholder="e.g. Code B, or None" maxlength="40">
+    @if (errors['driversLicense']) { <small class="error-text" role="alert">{{ errors['driversLicense'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="province">Province *</label>
+    <select id="province" name="province" [(ngModel)]="provinceId">
+      <option [ngValue]="null">--Select--</option>
+      @for (p of provinces(); track p.id) {
+        <option [ngValue]="p.id">{{ p.name }}</option>
+      }
+    </select>
+    @if (errors['province']) { <small class="error-text" role="alert">{{ errors['province'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="city">City / town *</label>
+    <input id="city" name="city" [(ngModel)]="city" maxlength="80">
+    @if (errors['city']) { <small class="error-text" role="alert">{{ errors['city'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="yearsExperience">Years of experience *</label>
+    <input id="yearsExperience" type="number" name="yearsExperience" [(ngModel)]="yearsExperience" min="0" max="60" step="1">
+    @if (errors['yearsExperience']) { <small class="error-text" role="alert">{{ errors['yearsExperience'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="availability">Availability *</label>
+    <select id="availability" name="availability" [(ngModel)]="availability">
+      <option value="">--Select--</option>
+      <option>Immediately</option>
+      <option>Within 2 weeks</option>
+      <option>Temporary/casual only</option>
+      <option>Not available</option>
+    </select>
+    @if (errors['availability']) { <small class="error-text" role="alert">{{ errors['availability'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="bio">A little about you</label>
+    <textarea id="bio" name="bio" rows="3" [(ngModel)]="bio" maxlength="600"></textarea>
+    @if (errors['bio']) { <small class="error-text" role="alert">{{ errors['bio'] }}</small> }
+  </div>
+
+  <div class="field equity-block">
+    <label class="checkbox-row">
+      <input type="checkbox" name="shareEquityInfo" [(ngModel)]="shareEquityInfo">
+      <span>Some employers ask for Employment Equity information (e.g. race, disability). This is optional, kept separate from your main profile, and never shared unless you choose to. Untick this and save to delete it.</span>
+    </label>
+    @if (shareEquityInfo) {
+      <select name="ethnicity" [(ngModel)]="ethnicity">
+        <option value="">--Prefer not to say--</option>
+        <option>Black</option>
+        <option>Coloured</option>
+        <option>Indian</option>
+        <option>Asian</option>
+        <option>White</option>
+        <option>Other</option>
+      </select>
+      <label for="hasDisability" style="margin-top: 0.5rem;">Disability</label>
+      <div class="radio-row" id="hasDisability">
+        <label><input type="radio" name="hasDisability" value="Yes" [(ngModel)]="hasDisability"> Yes</label>
+        <label><input type="radio" name="hasDisability" value="No" [(ngModel)]="hasDisability"> No</label>
+        <label><input type="radio" name="hasDisability" value="Prefer not to say" [(ngModel)]="hasDisability"> Prefer not to say</label>
+      </div>
+    }
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-outline" [disabled]="saving()">
+      {{ saving() ? 'Saving…' : 'Save profile' }}
+    </button>
+    <button type="button" class="btn btn-primary" [disabled]="saving()" (click)="save(true)">
+      {{ saving() ? 'Saving…' : 'Save and continue' }}
+    </button>
+  </div>
+  @if (saved()) {
+    <p class="success-text" role="status">Profile saved.</p>
+  }
+  @if (errorMessage()) {
+    <p class="error-text">{{ errorMessage() }}</p>
+  }
+</form>
+
+<hr>
+
+<h2>Documents</h2>
+@if (!profileExists()) {
+  <p>Save your profile first, then you can upload your CV and photo.</p>
+} @else {
+  <div class="field" style="max-width: 520px;">
+    <label for="cv">CV (PDF, JPG or PNG, max 5 MB)</label>
+    <input id="cv" type="file" accept=".pdf,.jpg,.jpeg,.png" (change)="onFileChosen($event, 'cv')">
+    @if (hasCv()) { <small>You have a CV uploaded. Choosing a new file will replace it.</small> }
+  </div>
+  <div class="field" style="max-width: 520px;">
+    <label for="photo">Profile photo (JPG or PNG, max 5 MB)</label>
+    <input id="photo" type="file" accept=".jpg,.jpeg,.png" (change)="onFileChosen($event, 'photo')">
+    @if (hasPhoto()) { <small>You have a photo uploaded. Choosing a new file will replace it.</small> }
+  </div>
+  @if (uploadMessage()) {
+    <p>{{ uploadMessage() }}</p>
+  }
+}
+
+<app-page-nav nextLink="/my-adverts" nextLabel="Next: My Adverts"></app-page-nav>

@@ -1,0 +1,41 @@
+<p><a routerLink="/my-jobs">← Back to my jobs</a></p>
+<h1>Applicants</h1>
+<p class="meta">{{ jobTitle() }}</p>
+
+@if (errorMessage()) {
+  <p class="error-text">{{ errorMessage() }}</p>
+}
+
+@if (loading()) {
+  <p>Loading…</p>
+} @else if (applicants().length === 0) {
+  <p>Nobody has applied for this job yet.</p>
+} @else {
+  @for (a of applicants(); track a.id) {
+    <div class="card">
+      <h3>{{ a.first_name }} {{ a.last_name }}</h3>
+      <p>
+        <span class="badge" [class.warn]="a.status === 'rejected' || a.status === 'withdrawn'">{{ a.status }}</span>
+        @if (a.city) { · {{ a.city }} }
+        @if (a.years_experience !== null) { · {{ a.years_experience }} years experience }
+        @if (a.availability) { · {{ a.availability }} }
+      </p>
+      @if (a.bio) { <p>{{ a.bio }}</p> }
+      @if (a.cover_note) { <p><strong>Note:</strong> {{ a.cover_note }}</p> }
+      @if (a.phone) { <p><strong>Phone:</strong> {{ a.phone }}</p> }
+
+      @if (a.has_cv) {
+        <button class="btn btn-outline" (click)="downloadCv(a)">Download CV</button>
+      }
+      @if (a.status === 'applied' || a.status === 'shortlisted') {
+        @if (a.status === 'applied') {
+          <button class="btn btn-primary" (click)="setStatus(a, 'shortlisted')">Shortlist</button>
+        }
+        <button class="btn btn-primary" (click)="setStatus(a, 'hired')">Hire</button>
+        <button class="btn btn-outline" (click)="setStatus(a, 'rejected')">Reject</button>
+      }
+    </div>
+  }
+}
+
+<app-page-nav></app-page-nav>

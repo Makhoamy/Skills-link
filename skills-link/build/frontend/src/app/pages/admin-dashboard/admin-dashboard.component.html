@@ -1,0 +1,163 @@
+<div class="admin-container">
+
+  <div class="dashboard-header">
+    <div>
+      <h1>Login History</h1>
+      <p>See who has logged in to Skills Link and when.</p>
+    </div>
+
+    <div class="header-buttons no-print">
+      <button class="export-btn" (click)="exportToCsv()" [disabled]="loading() || loginHistory().length === 0">
+        Download Excel Report
+      </button>
+      <button class="export-btn" (click)="printReport()" [disabled]="loading() || loginHistory().length === 0">
+        Print / Save as PDF
+      </button>
+    </div>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">{{ errorMessage() }}</div>
+  }
+  @if (message()) {
+    <div class="success-message no-print">{{ message() }}</div>
+  }
+
+  <div class="summary-cards">
+    <div class="summary-card">
+      <h3>Total Users</h3>
+      <p>{{ totalUsers() }}</p>
+    </div>
+    <div class="summary-card">
+      <h3>Jobseekers</h3>
+      <p>{{ totalJobseekers() }}</p>
+    </div>
+    <div class="summary-card">
+      <h3>Recruiters</h3>
+      <p>{{ totalRecruiters() }}</p>
+    </div>
+    <div class="summary-card">
+      <h3>All Sign-ins</h3>
+      <p>{{ totalSignIns() }}</p>
+    </div>
+    <div class="summary-card">
+      <h3>Sign-ins Today</h3>
+      <p>{{ loginsToday() }}</p>
+    </div>
+    <div class="summary-card">
+      <h3>Active Users (7 days)</h3>
+      <p>{{ activeLast7Days() }}</p>
+    </div>
+  </div>
+
+  <div class="history-section">
+    <h2>Login Report</h2>
+    <p>Period: {{ periodText() }}
+      @if (role) { | Role: {{ role }} }
+      @if (search) { | Email contains: {{ search }} }
+      | Records shown: {{ loginHistory().length }}
+      | Generated: {{ generatedAt() }}
+    </p>
+
+    <form class="filters no-print" (ngSubmit)="loadDashboard()">
+      <select name="days" [(ngModel)]="days">
+        <option [ngValue]="1">Last 24 hours</option>
+        <option [ngValue]="7">Last 7 days</option>
+        <option [ngValue]="30">Last 30 days</option>
+        <option [ngValue]="90">Last 90 days</option>
+        <option [ngValue]="0">All time</option>
+      </select>
+
+      <select name="role" [(ngModel)]="role">
+        <option value="">All roles</option>
+        <option value="jobseeker">Jobseekers</option>
+        <option value="recruiter">Recruiters</option>
+        <option value="admin">Admins</option>
+      </select>
+
+      <input type="text" name="search" [(ngModel)]="search" placeholder="Search by email">
+
+      <button type="submit" class="export-btn">Apply</button>
+      <button type="button" class="clear-btn" (click)="clearFilters()">Clear</button>
+    </form>
+
+    @if (loading()) {
+      <p class="loading-text">Loading login history...</p>
+    } @else if (loginHistory().length > 0) {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Login ID</th>
+              <th>Email Address</th>
+              <th>Role</th>
+              <th>Day</th>
+              <th>Login Date and Time</th>
+              <th>IP Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (login of loginHistory(); track login.loginID) {
+              <tr>
+                <td>{{ login.loginID }}</td>
+                <td>{{ login.email }}</td>
+                <td>{{ login.role }}</td>
+                <td>{{ dayName(login.loginDate) }}</td>
+                <td>{{ login.loginDate }}</td>
+                <td>{{ login.ipAddress ?? '-' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (loginHistory().length === 500) {
+        <p class="empty-message">Only the 500 most recent logins are shown. Use the filters to narrow it down.</p>
+      }
+    } @else {
+      <p class="empty-message">No login records found.</p>
+    }
+  </div>
+
+  <div class="history-section users-section no-print">
+    <h2>Users</h2>
+    <p>All registered accounts. Deleting an account removes it and its data for good.</p>
+
+    @if (users().length > 0) {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Email Address</th>
+              <th>Role</th>
+              <th>Registered</th>
+              <th>Last Login</th>
+              <th>Logins</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of users(); track u.id) {
+              <tr>
+                <td>{{ u.email }}</td>
+                <td>{{ u.role }}</td>
+                <td>{{ u.created_at }}</td>
+                <td>{{ u.lastLogin ?? 'Never' }}</td>
+                <td>{{ u.loginCount }}</td>
+                <td>
+                  @if (u.id !== auth.currentUser()?.id) {
+                    <button class="delete-btn" (click)="deleteUser(u)">Delete</button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="empty-message">No users found.</p>
+    }
+  </div>
+
+  <app-page-nav nextLink="/reports" nextLabel="Next: Reports"></app-page-nav>
+
+</div>

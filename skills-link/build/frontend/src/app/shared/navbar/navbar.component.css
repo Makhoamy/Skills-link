@@ -1,0 +1,58 @@
+.navbar {
+  background: var(--slk-ink);
+  border-bottom: 3px solid var(--slk-gold);
+}
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  padding: 0.85rem 1.25rem;
+}
+.brand {
+  font-family: var(--font-head);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--slk-white);
+  text-decoration: none;
+}
+.links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.1rem;
+}
+.links a:not(.btn) {
+  color: var(--slk-paper);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.25rem 0;
+  border-bottom: 2px solid transparent;
+}
+.links a:not(.btn):hover { color: var(--slk-gold); }
+.links a.active:not(.btn) {
+  color: var(--slk-gold);
+  border-bottom-color: var(--slk-gold);
+}
+/* Shows people which kind of account they are using */
+.role-tag {
+  background: var(--slk-gold);
+  color: var(--slk-white);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+}
+/* Buttons on the dark bar need light text to stay readable */
+.links .btn-outline {
+  color: var(--slk-white);
+  border-color: var(--slk-paper);
+}
+.links .btn-outline:hover {
+  background: var(--slk-paper);
+  color: var(--slk-ink);
+}

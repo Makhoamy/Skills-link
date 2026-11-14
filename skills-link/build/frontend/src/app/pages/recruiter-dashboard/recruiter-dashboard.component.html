@@ -1,0 +1,78 @@
+<h1>{{ profile()?.company_name ? profile()!.company_name : 'Recruiter dashboard' }}</h1>
+<p class="meta">
+  This is your home page. From here you can post jobs and see who applied.
+  @if (profile()) {
+    Company verification: <span class="badge" [class.warn]="profile()!.verification_status === 'rejected'">{{ profile()!.verification_status }}</span>
+  }
+</p>
+
+@if (!profile()) {
+  <div class="card next-steps">
+    <h3>Start here: complete your company profile</h3>
+    <p>You must fill in your company profile <strong>before you can post a job</strong>. It only takes a few minutes.</p>
+    <a class="btn btn-primary" routerLink="/recruiter-profile">Complete company profile</a>
+  </div>
+} @else {
+  <div class="card next-steps">
+    <h3>What to do next</h3>
+    <ol>
+      <li><strong>Post a job.</strong> Describe the work, where it is and what you will pay. <a routerLink="/post-job">Post a Job</a></li>
+      <li><strong>Check who applied.</strong> Open a job to see its applicants and accept or decline them. <a routerLink="/my-jobs">My Jobs &amp; Applicants</a></li>
+      <li><strong>Or look for workers yourself.</strong> Browse adverts that workers have posted. <a routerLink="/find-workers">Find Workers</a></li>
+    </ol>
+    @if (profile()!.verification_status === 'pending') {
+      <p class="meta">Your company is waiting to be verified by an administrator. You can still post jobs while you wait.</p>
+    }
+  </div>
+}
+
+@if (errorMessage()) {
+  <p class="error-text">{{ errorMessage() }}</p>
+}
+
+<div class="stats">
+  <div class="stat">
+    <strong>{{ jobs().length }}</strong>
+    Jobs posted
+  </div>
+  <div class="stat">
+    <strong>{{ openJobs() }}</strong>
+    Open jobs (still hiring)
+  </div>
+  <div class="stat">
+    <strong>{{ totalApplicants() }}</strong>
+    Total applicants
+  </div>
+  <div class="stat">
+    <strong>{{ newApplicants() }}</strong>
+    New applicants (not yet looked at)
+  </div>
+</div>
+
+<div class="actions">
+  <a class="btn btn-primary" routerLink="/post-job">Post a job</a>
+  <a class="btn btn-outline" routerLink="/my-jobs">My jobs &amp; applicants</a>
+  <a class="btn btn-outline" routerLink="/find-workers">Find workers</a>
+  <a class="btn btn-outline" routerLink="/recruiter-profile">Company profile</a>
+</div>
+
+<h2>Recent jobs</h2>
+@if (loading()) {
+  <p>Loading…</p>
+} @else if (recentJobs().length === 0) {
+  <p>You have not posted any jobs yet. Click <strong>Post a job</strong> to add your first one.</p>
+} @else {
+  @for (job of recentJobs(); track job.id) {
+    <div class="card">
+      <h3>{{ job.title }}</h3>
+      <p class="meta">
+        {{ job.city }} · <span class="badge">{{ job.status }}</span> ·
+        {{ job.applicant_count }} {{ job.applicant_count === 1 ? 'applicant' : 'applicants' }}
+        @if (job.new_count > 0) {
+          <span class="badge">{{ job.new_count }} new</span>
+        }
+      </p>
+      <a class="btn btn-primary" [routerLink]="['/jobs', job.id, 'applicants']">View applicants</a>
+    </div>
+  }
+}

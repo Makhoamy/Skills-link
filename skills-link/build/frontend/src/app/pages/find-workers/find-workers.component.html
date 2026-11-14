@@ -1,0 +1,50 @@
+<h1>Find Workers</h1>
+<p>Browse adverts posted by workers who are looking for work.</p>
+
+<form class="filters" (ngSubmit)="search()">
+  <input type="text" name="keyword" [(ngModel)]="keyword" placeholder="Search e.g. gardener">
+
+  <select name="provinceId" [(ngModel)]="provinceId">
+    <option [ngValue]="null">All provinces</option>
+    @for (p of provinces(); track p.id) {
+      <option [ngValue]="p.id">{{ p.name }}</option>
+    }
+  </select>
+
+  <select name="categoryId" [(ngModel)]="categoryId">
+    <option [ngValue]="null">All categories</option>
+    @for (c of categories(); track c.id) {
+      <option [ngValue]="c.id">{{ c.name }}</option>
+    }
+  </select>
+
+  <button type="submit" class="btn btn-primary">Search</button>
+  <button type="button" class="btn btn-outline" (click)="clear()">Clear</button>
+</form>
+
+@if (errorMessage()) {
+  <p class="error-text">{{ errorMessage() }}</p>
+}
+
+@if (loading()) {
+  <p>Loading…</p>
+} @else if (adverts().length === 0) {
+  <p>No adverts found. Try a different search.</p>
+} @else {
+  @for (a of adverts(); track a.id) {
+    <div class="card">
+      <h3>{{ a.title }}</h3>
+      <p class="meta">{{ a.first_name }} · {{ a.city }} · {{ a.category }}</p>
+      @if (a.rate_amount) {
+        <p class="pay">R{{ a.rate_amount }} / {{ a.rate_period }}</p>
+      }
+      <p>{{ a.description }}</p>
+      @if (a.rating_count > 0) {
+        <span class="badge">★ {{ a.avg_rating }} ({{ a.rating_count }})</span>
+      }
+      <p><strong>Phone:</strong> {{ a.contact_phone }}</p>
+    </div>
+  }
+}
+
+<app-page-nav></app-page-nav>

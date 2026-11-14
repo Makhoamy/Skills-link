@@ -1,0 +1,127 @@
+
+<h1>Create an account</h1>
+
+<form #f="ngForm" (ngSubmit)="submit()" novalidate style="max-width: 420px;">
+  <div class="field">
+    <label for="email">Email</label>
+    <input
+      id="email"
+      type="email"
+      name="email"
+      [(ngModel)]="email"
+      required
+    >
+  </div>
+
+  <div class="field">
+    <label for="phone">Phone number</label>
+    <input
+      id="phone"
+      type="tel"
+      name="phone"
+      [(ngModel)]="phone"
+      #phoneCtrl="ngModel"
+      pattern="[0-9]{10}"
+      maxlength="10"
+      inputmode="numeric"
+      placeholder="0712345678"
+      required
+    >
+  </div>
+
+  <div class="field">
+    <label for="password">Password</label>
+    <input
+      id="password"
+      type="password"
+      name="password"
+      [(ngModel)]="password"
+      autocomplete="new-password"
+      required
+    >
+    <app-password-strength [password]="password" [email]="email"></app-password-strength>
+  </div>
+
+  <div class="field">
+    <label for="confirmPassword">Confirm password</label>
+    <input
+      id="confirmPassword"
+      type="password"
+      name="confirmPassword"
+      [(ngModel)]="confirmPassword"
+      required
+    >
+  </div>
+
+  <div class="field">
+    <label>I want to... *</label>
+    <div class="radio-row">
+      <label>
+        <input
+          type="radio"
+          name="role"
+          value="recruiter"
+          [(ngModel)]="role"
+        >
+        Hire workers (Recruiter)
+      </label>
+
+      <label>
+        <input
+          type="radio"
+          name="role"
+          value="jobseeker"
+          [(ngModel)]="role"
+        >
+        Find work (Jobseeker)
+      </label>
+    </div>
+  </div>
+
+  <div class="field consent-block">
+    <label class="checkbox-row">
+      <input
+        type="checkbox"
+        name="popiaConsent"
+        [(ngModel)]="popiaConsent"
+        required
+      >
+      <span>
+        I agree to the Terms of Service and Privacy Policy,
+        and consent to my personal information being processed
+        in accordance with POPIA.
+      </span>
+    </label>
+
+    <label class="checkbox-row">
+      <input
+        type="checkbox"
+        name="marketingConsent"
+        [(ngModel)]="marketingConsent"
+      >
+      <span>
+        Send me job alerts and platform updates by email
+        (optional — you can withdraw this anytime).
+      </span>
+    </label>
+  </div>
+
+  @if (errorMessage()) {
+    <p class="error-text" role="alert" aria-live="polite">
+      {{ errorMessage() }}
+    </p>
+  }
+
+  <button
+    type="submit"
+    class="btn btn-primary"
+    [disabled]="loading()"
+  >
+    {{ loading() ? 'Creating account…' : 'Create account' }}
+  </button>
+</form>
+
+<p style="margin-top: 1rem;">
+  Already have an account?
+  <a routerLink="/login">Sign in</a>
+</p>

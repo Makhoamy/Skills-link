@@ -1,0 +1,33 @@
+<h1>Jobs</h1>
+
+@if (loading()) {
+  <p>Loading jobs…</p>
+} @else if (jobs().length === 0) {
+  <p>No jobs match your search yet. Try a different keyword or province.</p>
+} @else {
+  @for (job of jobs(); track job.id) {
+    <a [routerLink]="['/jobs', job.id]" class="job-link">
+      <div class="card" [class.flag]="job.below_nmw_flag">
+        <h3>{{ job.title }}</h3>
+        <p class="meta">{{ job.company_name }} · {{ job.city }}, {{ job.province_name }} · {{ job.category_name }}</p>
+        <p class="pay">R{{ job.pay_amount }} / {{ job.pay_period }}</p>
+        @if (job.below_nmw_flag) {
+          <span class="badge warn">Below minimum wage</span>
+        }
+        @if (job.recruiter_rating > 0) {
+          <span class="badge">★ {{ job.recruiter_rating }}</span>
+        }
+      </div>
+    </a>
+  }
+}
+
+@if (!loading() && (page > 1 || hasNextPage())) {
+  <div class="pager">
+    <button class="btn btn-outline" (click)="goToPage(page - 1)" [disabled]="page <= 1">Previous</button>
+    <span>Page {{ page }}</span>
+    <button class="btn btn-outline" (click)="goToPage(page + 1)" [disabled]="!hasNextPage()">Next</button>
+  </div>
+}
+
+<app-page-nav></app-page-nav>

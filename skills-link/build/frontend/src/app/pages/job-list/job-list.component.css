@@ -1,0 +1,20 @@
+.job-link {
+   text-decoration: none; 
+   color: inherit; display:
+    block; }
+.meta { 
+  color: #555;
+   font-size: 0.9rem; 
+   margin: 0.2rem 0;
+   }
+.pay { 
+  font-weight: 600;
+   margin: 0.3rem 0;
+   }
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}

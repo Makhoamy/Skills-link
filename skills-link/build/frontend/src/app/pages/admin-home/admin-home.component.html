@@ -1,0 +1,25 @@
+<h1>Administrator dashboard</h1>
+<p class="meta">An overview of activity on Skills Link.</p>
+
+@if (errorMessage()) {
+  <p class="error-text">{{ errorMessage() }}</p>
+}
+
+@if (loading()) {
+  <p>Loading…</p>
+} @else if (stats()) {
+  <div class="stats">
+    <div class="stat"><strong>{{ stats()!.totalUsers }}</strong>Total users</div>
+    <div class="stat"><strong>{{ stats()!.totalJobseekers }}</strong>Jobseekers</div>
+    <div class="stat"><strong>{{ stats()!.totalRecruiters }}</strong>Recruiters</div>
+    <div class="stat"><strong>{{ stats()!.loginsToday }}</strong>Sign-ins today</div>
+    <div class="stat"><strong>{{ stats()!.activeLast7Days }}</strong>Active in last 7 days</div>
+    <div class="stat"><strong>{{ pendingRecruiters() }}</strong>Recruiters awaiting verification</div>
+  </div>
+}
+
+<div class="actions">
+  <a class="btn btn-primary" routerLink="/admin">Verify recruiters</a>
+  <a class="btn btn-outline" routerLink="/admin-dashboard">Login history</a>
+  <a class="btn btn-outline" routerLink="/reports">Reports</a>
+</div>

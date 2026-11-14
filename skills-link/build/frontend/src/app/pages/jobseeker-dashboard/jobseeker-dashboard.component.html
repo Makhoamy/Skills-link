@@ -1,0 +1,67 @@
+<h1>Welcome{{ profile()?.first_name ? ', ' + profile()!.first_name : '' }}</h1>
+<p class="meta">This is your home page. From here you can finish your profile, look for work and see the latest jobs.</p>
+
+<div class="card next-steps">
+  <h3>What to do next</h3>
+  <ol>
+    <li [class.done]="completeness() === 100">
+      <strong>Complete your profile.</strong> Employers look at your profile before they choose someone.
+      <a routerLink="/worker-profile">Open My Profile</a>
+    </li>
+    <li>
+      <strong>Find a job and apply.</strong> Open a job and click <em>Apply for this job</em>.
+      <a routerLink="/jobs">Find Jobs</a>
+    </li>
+    <li>
+      <strong>Optional: advertise yourself.</strong> Post a short advert so employers can contact you directly.
+      <a routerLink="/my-adverts">Advertise Myself</a>
+    </li>
+  </ol>
+</div>
+
+@if (errorMessage()) {
+  <p class="error-text">{{ errorMessage() }}</p>
+}
+
+<div class="stats">
+  <div class="stat">
+    <strong>{{ completeness() }}%</strong>
+    Profile complete
+  </div>
+  <div class="stat">
+    <strong>{{ profile()?.rating_count ?? 0 }}</strong>
+    Reviews from employers
+  </div>
+  <div class="stat">
+    <strong>{{ profile()?.avg_rating ?? 0 }}</strong>
+    Average rating (out of 5)
+  </div>
+</div>
+
+@if (completeness() < 100) {
+  <p>Your profile is {{ completeness() }}% complete. Add the missing details (such as your city, experience, a short bio, a CV or a photo) so more employers choose you.</p>
+}
+
+<div class="actions">
+  <a class="btn btn-primary" routerLink="/jobs">Find jobs</a>
+  <a class="btn btn-outline" routerLink="/worker-profile">Edit my profile</a>
+  <a class="btn btn-outline" routerLink="/my-adverts">Advertise myself</a>
+</div>
+
+<h2>Latest jobs</h2>
+@if (loading()) {
+  <p>Loading…</p>
+} @else if (latestJobs().length === 0) {
+  <p>There are no jobs available right now.</p>
+} @else {
+  @for (job of latestJobs(); track job.id) {
+    <div class="card">
+      <h3>{{ job.title }}</h3>
+      <p class="meta">
+        {{ job.company_name }} · {{ job.city }} · R{{ job.pay_amount }} / {{ job.pay_period }}
+      </p>
+      <a class="btn btn-outline" [routerLink]="['/jobs', job.id]">View job</a>
+    </div>
+  }
+  <a routerLink="/jobs">See all jobs</a>
+}

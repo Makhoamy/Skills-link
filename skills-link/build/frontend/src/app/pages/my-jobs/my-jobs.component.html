@@ -1,0 +1,34 @@
+<h1>My Jobs &amp; Applicants</h1>
+<p class="meta">The jobs you have posted. Click <strong>View applicants</strong> to see who applied.</p>
+
+@if (errorMessage()) {
+  <p class="error-text">{{ errorMessage() }}</p>
+}
+
+@if (loading()) {
+  <p>Loading…</p>
+} @else if (jobs().length === 0 && !errorMessage()) {
+  <p>You have not posted any jobs yet.</p>
+  <a class="btn btn-primary" routerLink="/post-job">Post a job</a>
+} @else {
+  @for (job of jobs(); track job.id) {
+    <div class="card">
+      <h3>{{ job.title }}</h3>
+      <p class="meta">
+        {{ job.city }} · R{{ job.pay_amount }} / {{ job.pay_period }} ·
+        <span class="badge" [class.warn]="job.status === 'closed'">{{ job.status }}</span>
+      </p>
+      <p>
+        <strong>{{ job.applicant_count }}</strong>
+        {{ job.applicant_count === 1 ? 'applicant' : 'applicants' }}
+        @if (job.new_count > 0) {
+          <span class="badge">{{ job.new_count }} new</span>
+        }
+      </p>
+      <a class="btn btn-primary" [routerLink]="['/jobs', job.id, 'applicants']">View applicants</a>
+      <a class="btn btn-outline" [routerLink]="['/jobs', job.id]">View job</a>
+    </div>
+  }
+}
+
+<app-page-nav></app-page-nav>

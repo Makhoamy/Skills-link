@@ -1,0 +1,43 @@
+<h1>Verify recruiters</h1>
+<p>Check each company's registration document before verifying them.</p>
+
+<div style="margin-bottom: 1rem; display: flex; gap: 0.5rem;">
+  @for (s of statuses; track s) {
+    <button class="btn" [class.btn-primary]="currentStatus() === s" [class.btn-outline]="currentStatus() !== s" (click)="showStatus(s)">
+      {{ s }}
+    </button>
+  }
+</div>
+
+@if (errorMessage()) {
+  <p class="error-text">{{ errorMessage() }}</p>
+}
+
+@if (loading()) {
+  <p>Loading…</p>
+} @else if (recruiters().length === 0) {
+  <p>No {{ currentStatus() }} recruiters.</p>
+} @else {
+  @for (r of recruiters(); track r.user_id) {
+    <div class="card">
+      <h3>{{ r.company_name }}</h3>
+      <p>{{ r.email }} @if (r.city) { · {{ r.city }} }</p>
+      @if (r.registration_number) { <p>Registration number: {{ r.registration_number }}</p> }
+      @if (r.website) { <p>Website: {{ r.website }}</p> }
+
+      @if (r.has_registration_doc) {
+        <button class="btn btn-outline" (click)="viewDocument(r)">View registration document</button>
+      } @else {
+        <p class="error-text">No registration document uploaded yet.</p>
+      }
+      @if (r.verification_status !== 'verified') {
+        <button class="btn btn-primary" (click)="setStatus(r, 'verified')">Verify</button>
+      }
+      @if (r.verification_status !== 'rejected') {
+        <button class="btn btn-outline" (click)="setStatus(r, 'rejected')">Reject</button>
+      }
+    </div>
+  }
+}
+
+<app-page-nav></app-page-nav>

@@ -1,0 +1,72 @@
+<h1>Advertise Myself</h1>
+<p>Write a short advert about the work you do. Employers use <strong>Find Workers</strong> to see it and can phone you. This is optional and is separate from applying for a job.</p>
+
+<form (ngSubmit)="submit()" novalidate style="max-width: 480px;">
+  <div class="field">
+    <label for="title">Headline *</label>
+    <input id="title" name="title" [(ngModel)]="title" placeholder="e.g. Reliable gardener available, Soweto" maxlength="120">
+    @if (errors['title']) { <small class="error-text" role="alert">{{ errors['title'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="description">Describe your work *</label>
+    <textarea id="description" name="description" rows="4" [(ngModel)]="description" maxlength="800"></textarea>
+    @if (errors['description']) { <small class="error-text" role="alert">{{ errors['description'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="categoryId">Category *</label>
+    <select id="categoryId" name="categoryId" [(ngModel)]="categoryId">
+      <option [ngValue]="null">--Select--</option>
+      @for (c of categories(); track c.id) {
+        <option [ngValue]="c.id">{{ c.name }}</option>
+      }
+    </select>
+    @if (errors['categoryId']) { <small class="error-text" role="alert">{{ errors['categoryId'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="provinceId">Province *</label>
+    <select id="provinceId" name="provinceId" [(ngModel)]="provinceId">
+      <option [ngValue]="null">--Select--</option>
+      @for (p of provinces(); track p.id) {
+        <option [ngValue]="p.id">{{ p.name }}</option>
+      }
+    </select>
+    @if (errors['provinceId']) { <small class="error-text" role="alert">{{ errors['provinceId'] }}</small> }
+  </div>
+  <div class="field">
+    <label for="city">City / town *</label>
+    <input id="city" name="city" [(ngModel)]="city" maxlength="80">
+    @if (errors['city']) { <small class="error-text" role="alert">{{ errors['city'] }}</small> }
+  </div>
+  <div class="field pay-row">
+    <div>
+      <label for="rateAmount">Your rate (ZAR, optional)</label>
+      <input id="rateAmount" type="number" name="rateAmount" [(ngModel)]="rateAmount" min="0" step="any">
+      @if (errors['rateAmount']) { <small class="error-text" role="alert">{{ errors['rateAmount'] }}</small> }
+    </div>
+    <div>
+      <label for="ratePeriod">Per</label>
+      <select id="ratePeriod" name="ratePeriod" [(ngModel)]="ratePeriod">
+        <option value="">--Select--</option>
+        <option value="hourly">Hour</option>
+        <option value="daily">Day</option>
+        <option value="weekly">Week</option>
+        <option value="per_job">Job</option>
+      </select>
+      @if (errors['ratePeriod']) { <small class="error-text" role="alert">{{ errors['ratePeriod'] }}</small> }
+    </div>
+  </div>
+  <div class="field">
+    <label for="contactPhone">Contact phone *</label>
+    <input id="contactPhone" type="tel" name="contactPhone" [(ngModel)]="contactPhone" maxlength="20" placeholder="e.g. 082 123 4567">
+    @if (errors['contactPhone']) { <small class="error-text" role="alert">{{ errors['contactPhone'] }}</small> }
+  </div>
+
+  <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+    {{ submitting() ? 'Posting…' : 'Post advert' }}
+  </button>
+  @if (message()) {
+    <p [class.error-text]="!success()" [class.success-text]="success()" role="status">{{ message() }}</p>
+  }
+</form>
+
+<app-page-nav nextLink="/jobs" nextLabel="Next: Find Work"></app-page-nav>

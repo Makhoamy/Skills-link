@@ -1,0 +1,47 @@
+<header class="navbar">
+  <div class="container navbar-inner">
+    <a [routerLink]="auth.currentUser() ? auth.homeFor(auth.currentUser()!.role) : '/'" class="brand">Skills Link</a>
+
+    <nav class="links" aria-label="Main menu">
+
+      <!-- Visitors (not logged in) -->
+      @if (!auth.isLoggedIn()) {
+        <a routerLink="/jobs" routerLinkActive="active">Browse Jobs</a>
+        <a routerLink="/login" class="btn btn-outline">Log in</a>
+        <a routerLink="/signup" class="btn btn-primary">Sign up</a>
+      }
+
+      <!-- Jobseekers -->
+      @if (auth.currentUser()?.role === 'jobseeker') {
+        <span class="role-tag">Jobseeker</span>
+        <a routerLink="/dashboard" routerLinkActive="active">Home</a>
+        <a routerLink="/jobs" routerLinkActive="active">Find Jobs</a>
+        <a routerLink="/worker-profile" routerLinkActive="active">My Profile</a>
+        <a routerLink="/my-adverts" routerLinkActive="active">Advertise Myself</a>
+      }
+
+      <!-- Recruiters -->
+      @if (auth.currentUser()?.role === 'recruiter') {
+        <span class="role-tag">Recruiter</span>
+        <a routerLink="/recruiter-dashboard" routerLinkActive="active">Home</a>
+        <a routerLink="/post-job" routerLinkActive="active">Post a Job</a>
+        <a routerLink="/my-jobs" routerLinkActive="active">My Jobs &amp; Applicants</a>
+        <a routerLink="/find-workers" routerLinkActive="active">Find Workers</a>
+        <a routerLink="/recruiter-profile" routerLinkActive="active">Company Profile</a>
+      }
+
+      <!-- Administrators -->
+      @if (auth.currentUser()?.role === 'admin') {
+        <span class="role-tag">Admin</span>
+        <a routerLink="/admin-home" routerLinkActive="active">Home</a>
+        <a routerLink="/admin" routerLinkActive="active">Verify Recruiters</a>
+        <a routerLink="/admin-dashboard" routerLinkActive="active">Login History</a>
+        <a routerLink="/reports" routerLinkActive="active">Reports</a>
+      }
+
+      @if (auth.isLoggedIn()) {
+        <button class="btn btn-outline" (click)="logout()">Log out</button>
+      }
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,2 @@
+# Never serve secrets or config files over HTTP
+Require all denied

@@ -1,0 +1,10 @@
+.pay-row { 
+    flex-direction: row;
+     gap: 1rem; 
+     align-items: flex-end;
+     }
+.pay-row > div { 
+    display: flex;
+     flex-direction: column;
+      gap: 0.3rem; flex: 1;
+     }
